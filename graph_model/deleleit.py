@@ -10,4 +10,3 @@ from matplotlib import pyplot as plt
 from matplotlib.pyplot import cla
 
 
-c

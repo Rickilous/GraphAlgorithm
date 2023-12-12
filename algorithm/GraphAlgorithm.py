@@ -172,8 +172,11 @@ def kuhn_munkres(adj_matrix):
 def Floyd(Matrix):
     n = Matrix.shape[0]
     dist = Matrix.copy()  # 初始化为无穷大
-    e = (dist != -1)
-    dist = np.where(e, dist, 999999)  # -1改9999
+    for i in range(n):
+        for j in range(n):
+            if i != j and dist[i][j] == 0:
+                dist[i][j] = 9999  # 0改999
+
 
     path = -1 * np.ones((n, n))  # -1 表示没有路径
 
@@ -193,36 +196,45 @@ def Floyd(Matrix):
                     dist[i][j] = dist[i][k] + dist[k][j]
                     path[i][j] = k
 
+
     return dist, path
 
 
 def floydwarshall(adMat):
     # 输入的adMat为-1 和0 短路的矩阵
-    # 这个算法中对角线和下三角矩阵都为65535，兼容处理为0和-1
-    e = (adMat > 0)
-    matrix = np.where(e, adMat, 65535)
-    matrix_info = np.array(matrix)
+    # 这个算法中对角线和下三角矩阵都为999，兼容处理为0和-1
+    # e = (adMat != 0)
+    # matrix = np.where(e, adMat, float('inf'))
+    matrix_info = adMat.copy()
     n = matrix_info.shape[0]
+    path = (-1) * np.ones((n, n))  # -1 表示没有路径
+
+    for i in range(n):
+        for j in range(n):
+            if matrix_info[i][j] == 0 and i != j:
+                matrix_info[i][j] = 9999
+
+    # matrix_info = np.array(matrix)
+    # n = matrix_info.shape[0]
     for k in range(n):
-        i = 1
-        j = 1
         for i in range(n):
             for j in range(n):
-                if (matrix_info[i][j] > matrix_info[i][k] + matrix_info[k][j]):
+                if matrix_info[i][j] > matrix_info[i][k] + matrix_info[k][j]:
                     matrix_info[i][j] = matrix_info[i][k] + matrix_info[k][j]
+                    path[i][j] = k
 
-    e = (matrix_info != 65535)
-    matrix_info = np.where(e, matrix_info, -1)
-
-    # 有向图距离矩阵转为邻接矩阵
-    n = matrix_info.shape[0]
-    for i in range(n - 1):
-        for j in range(n - 1):
-            if matrix_info[i + 1][n - j - 1] != -1 and matrix_info[i][n - j - 2] != -1:
-                matrix_info[i][n - j - 1] = -1
-    for i in range(n):
-        matrix_info[i][i] = 0
-    return matrix_info
+    #
+    # # 有向图距离矩阵转为邻接矩阵
+    # n = matrix_info.shape[0]
+    # for i in range(n - 1):
+    #     for j in range(n - 1):
+    #         if matrix_info[i + 1][n - j - 1] != -1 and matrix_info[i][n - j - 2] != -1:
+    #             matrix_info[i][n - j - 1] = -1
+    # for i in range(n):
+    #     matrix_info[i][i] = 0
+    print(matrix_info)
+    print(path)
+    return matrix_info, path
 
 
 def dijkstra(adMat):
@@ -368,8 +380,8 @@ def runFloyd(input_Mat):
 
 
 def runFloydwarshall(input_Mat):
-    output_Mat= floydwarshall(input_Mat)
-    return output_Mat
+    output_Mat, path= floydwarshall(input_Mat)
+    return output_Mat, path
 
 
 def runHungarian(input_Mat):
