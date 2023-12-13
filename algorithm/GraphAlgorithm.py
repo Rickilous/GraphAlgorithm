@@ -238,52 +238,77 @@ def floydwarshall(adMat):
     return matrix_info, path
 
 
-def dijkstra(adMat):
-    # 慢就慢吧，心情好了再来优化哈哈哈哈
+def find_min_distance_vertex(distances, visited):
+    # 从未访问的节点中找到距离最小的节点
+    min_distance = sys.maxsize
+    min_vertex = None
 
-    # 假设输入的矩阵满足条件：排在第一的节点可以抵达其他任意节点
+    for vertex, distance in enumerate(distances):
+        if vertex not in visited and distance < min_distance:
+            min_distance = distance
+            min_vertex = vertex
 
-    # 判断是否为无向图，用对称矩阵判断
-    flag = 0  # 无向图
-    for i in range(len(adMat)):
-        for j in range(i + 1, len(adMat)):
-            if adMat[i][j] != adMat[j][i]:
-                flag = 1  # 有向图/非无向图
-                break
+    return min_vertex
 
-    max = np.max(adMat)
-    print('max:', max)
-    S = []
-    N = list(range(len(adMat)))
-    e = (adMat > 0)
-    adMat = np.where(e, adMat, 0)
-    S.append(N.pop(0))
-    finally_adMat = np.zeros(adMat.shape)
-    while (len(N) != 0):
-        for i in S:
-            for j in S:
-                adMat[i][j] = 0
-        x = 0
-        y = 0
-        w = max + 1
-        for i in S:
-            for j in N:
-                if adMat[i][j] > 0 and adMat[i][j] < w:
-                    x = i
-                    y = j
-                    w = adMat[i][j]
-        finally_adMat[x][y] = w
-        S.append(N.pop(N.index(y)))
 
-    if flag == 0:
-        for i in range(len(finally_adMat)):
-            for j in range(i, len(finally_adMat)):
-                if finally_adMat[i][j] == 0:
-                    finally_adMat[i][j] = finally_adMat[j][i]
-                else:
-                    finally_adMat[j][i] = finally_adMat[i][j]
-    print(finally_adMat)
-    return finally_adMat
+def dijkstra(graph, start, end):
+    num_vertices = graph.shape[0]
+
+    # 初始化距离表，将不可达的距离设置为 sys.maxsize
+    distances = np.full(num_vertices, sys.maxsize)
+    distances[start] = 0  # 起始点到自身的距离为0
+
+    # 初始化前驱节点表
+    predecessors = np.full(num_vertices, -1, dtype=int)
+
+    # 初始化已访问集合
+    visited = set()
+
+    while len(visited) < num_vertices:
+        # 选取未访问的距离表中距离最小的顶点
+        current_vertex = find_min_distance_vertex(distances, visited)
+        visited.add(current_vertex)
+
+        # 更新当前顶点的邻接顶点的距离
+        for neighbor in range(num_vertices):
+            weight = graph[current_vertex, neighbor]
+
+            # 检查是否为不可达
+            if weight == 0:
+                continue
+
+            potential_distance = distances[current_vertex] + weight
+            if neighbor not in visited and potential_distance < distances[neighbor]:
+                distances[neighbor] = potential_distance
+                predecessors[neighbor] = current_vertex
+
+    # 通过前驱节点表构建最短路径
+    path = []
+    current_vertex = end
+    while current_vertex != -1:
+        path.insert(0, current_vertex)
+        current_vertex = predecessors[current_vertex]
+
+    return path, predecessors
+
+
+def get_shortest_path_matrix(graph, path):
+    # 初始化一个新的邻接矩阵，全部初始化为0
+    path_matrix = np.zeros_like(graph)
+
+    # 将最短路径上的边的邻接矩阵值保留
+    for i in range(len(path) - 1):
+        current_vertex = path[i]
+        next_vertex = path[i + 1]
+        path_matrix[current_vertex, next_vertex] = graph[current_vertex, next_vertex]
+
+    return path_matrix
+
+
+def dj(graph, start_vertex, end_vertex):
+    shortest_path, predecessors = dijkstra(graph, start_vertex, end_vertex)
+    shortest_path_matrix = get_shortest_path_matrix(graph, shortest_path)
+    return shortest_path_matrix, shortest_path
 
 '''
 最小生成树算法kruskal
@@ -370,9 +395,10 @@ def runDes_Cir(input_Mat):
 
 
 def runDijkstra(input_Mat):
-    output_Mat= dijkstra(input_Mat)
+    # output_Mat = dijkstra(input_Mat)
+    output_Mat, output_Path = dj(input_Mat, 0, len(input_Mat) - 1)
     print(output_Mat)
-    return output_Mat
+    return output_Mat, output_Path
 
 
 def runFloyd(input_Mat):

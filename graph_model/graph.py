@@ -9,9 +9,9 @@ from matplotlib import pyplot as plt
 from matplotlib.pyplot import cla
 from algorithm import GraphAlgorithm as GA
 
-
-
 matplotlib.use('TkAgg')
+
+
 class Graph_Model:
     global_strGraph = None
     input_Mat = None
@@ -84,7 +84,7 @@ class Graph_Model:
             G = nx.DiGraph() if self.global_strGraph[0] == 'digraph' else nx.Graph()
             colors = []
             # 针对二部图
-            if self.global_strGraph[0] == 'bigraph': # 二部图
+            if self.global_strGraph[0] == 'bigraph':
                 # 创建点
                 for idx, nodes in enumerate(node_names):
                     bipartite_set = 0 if idx == 0 else 1
@@ -95,9 +95,10 @@ class Graph_Model:
                 for i in range(node_num[0]):
                     for j in range(node_num[1]):
                         if des == 'input':
-                            if mat[i][j] == 0:  # 对于权值为0 画白边
-                                colors.append('white')
-                                G.add_edge(node_names[0][i], node_names[1][j], name="")
+                            if mat[i][j] == 0:
+                                a = 0
+                                # colors.append('white')
+                                # G.add_edge(node_names[0][i], node_names[1][j], name="")
                             else:
                                 colors.append('black')
                                 if weighted == 'weighted':
@@ -105,60 +106,53 @@ class Graph_Model:
                                 elif weighted == 'unweighted':
                                     G.add_edge(node_names[0][i], node_names[1][j], name="")
                         elif des == 'output':
-                            if mat[i][j] != 0 \
-                                    and mat[i][j] != -1 \
-                                    and not G.has_edge(node_names[0][i], node_names[1][j]):
+                            if mat[i][j] != 0 and mat[i][j] != -1:
                                 colors.append('red')
-                            elif self.input_Mat[i][j] != 0 \
-                                    and self.input_Mat[i][j] != -1 \
-                                    and not G.has_edge(node_names[0][i], node_names[1][j]):
+                                if weighted == 'weighted':
+                                    G.add_edge(node_names[0][i], node_names[1][j])
+                                elif weighted == 'unweighted':
+                                    G.add_edge(node_names[0][i], node_names[1][j])
+                            elif mat[i][j] == 0 and self.input_Mat[i][j] != 0:
                                 colors.append('black')
-                            else:
-                                colors.append('white')
-                            if weighted == 'weighted':
-                                G.add_edge(node_names[0][i], node_names[1][j])
-                            elif weighted == 'unweighted':
-                                G.add_edge(node_names[0][i], node_names[1][j])
-
-
-
-            # 不是二部图
+                                if weighted == 'weighted':
+                                    G.add_edge(node_names[0][i], node_names[1][j])
+                                elif weighted == 'unweighted':
+                                    G.add_edge(node_names[0][i], node_names[1][j])
             else:
                 for i in range(node_num):
                     G.add_node(node_names[i], desc=str(node_names[i]))
-                if self.global_strGraph[0] == 'graph':  # 无向图
+                if self.global_strGraph[0] == 'graph':
+                    transposed_matrix = np.transpose(mat)
+                    # 取元素的逐元素最大值，得到无向图的邻接矩阵
+                    mat = np.maximum(mat, transposed_matrix)
                     for i in range(node_num):
                         for j in range(node_num):
                             if des == 'input':
-                                if mat[i][j] != 0 \
-                                        and i!=j \
-                                        and not G.has_edge(node_names[i], node_names[j]):
+                                if mat[i][j] != 0 and mat[i][j] != -1 and not G.has_edge(node_names[i], node_names[j]):
                                     colors.append('black')
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
                             elif des == 'output':
-                                if mat[i][j] != 0 \
-                                        and i!=j \
-                                        and not G.has_edge(node_names[i], node_names[j]):  #mat[i][j] != -1
+                                if mat[i][j] != 0 and mat[i][j] != -1 and not G.has_edge(node_names[i], node_names[j]):
                                     colors.append('red')
+                                    print("涂红")
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
-                                elif self.input_Mat[i][j] != 0 \
-                                        and i!=j \
-                                        and not G.has_edge(node_names[i], node_names[j]): #self.input_Mat[i][j] != -1
+                                elif self.input_Mat[i][j] != 0 and self.input_Mat[i][j] != -1 and not G.has_edge(
+                                        node_names[i], node_names[j]):
                                     colors.append('black')
+                                    print("涂黑")
                                     G.add_edge(node_names[i], node_names[j], name=self.input_Mat[i][j])
-
-                if self.global_strGraph[0] == 'digraph':  # 有向图
+                if self.global_strGraph[0] == 'digraph':
                     for i in range(node_num):
                         for j in range(node_num):
                             if des == 'input':
-                                if mat[i][j] != 0 and i!=j :
+                                if mat[i][j] != 0 and mat[i][j] != -1:
                                     colors.append('black')
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
                             elif des == 'output':
-                                if mat[i][j] != 0 and i!=j : #mat[i][j] != -1
+                                if mat[i][j] != 0 and mat[i][j] != -1:
                                     colors.append('red')
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
-                                elif self.input_Mat[i][j] != 0 and i!=j : #self.input_Mat[i][j] != -1
+                                elif self.input_Mat[i][j] != 0 and self.input_Mat[i][j] != -1:
                                     colors.append('black')
                                     G.add_edge(node_names[i], node_names[j], name=self.input_Mat[i][j])
             return G, colors
@@ -213,7 +207,6 @@ class Graph_Model:
             else:
                 mat = self.output_Mat
 
-
             # Create and draw the graph 此处修改，记得colors并不应该是全局变量，到时候做个判断改回去
             self.G = None
             self.colors = None
@@ -260,7 +253,7 @@ class Graph_Model:
 
             elif algorithm_name == "最短路径Floyd":
                 self.output_Mat, self.output_Path = GA.runFloyd(self.input_Mat)
-                self.output_Msg="Path矩阵：\n"+str(self.output_Path)
+                self.output_Msg = "Path矩阵：\n" + str(self.output_Path)
                 for i in range(self.output_Mat.shape[0]):
                     if self.output_Mat[i][i] < 0:
                         self.output_Msg += "\nWarning: This Input Graph Have Negative Circle!\n"
