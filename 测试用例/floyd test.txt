@@ -6,3 +6,21 @@ A B C D
 5 0 3 11
 7 3 0 6
 -1 11 6 0
+
+graph
+weighted
+4
+A B C D
+0 5 7 -1
+5 0 3 -1
+7 3 0 6
+-1 -1 6 0
+
+digraph
+weighted
+4
+A B C D
+0 1 0 0
+0 0 -1 0
+0 0 0 -1
+-1 0 0 0

@@ -174,12 +174,13 @@ def Floyd(Matrix):
     dist = Matrix.copy()  # 初始化为无穷大
     for i in range(n):
         for j in range(n):
-            if i != j and dist[i][j] == 0:
+            if dist[i][j] == 0 and i!=j:
                 dist[i][j] = 9999  # 0改999
 
 
-    path = -1 * np.ones((n, n))  # -1 表示没有路径
-
+    path = (-1) * np.ones((n, n))  # -1 表示没有路径
+    print('dist:\n', dist)
+    print('path:\n', path)
     # 兼容性修改
     #
     # e = (dist != -1)
@@ -195,8 +196,8 @@ def Floyd(Matrix):
                 if dist[i][j] > dist[i][k] + dist[k][j]:
                     dist[i][j] = dist[i][k] + dist[k][j]
                     path[i][j] = k
-
-
+    print(dist)
+    print(path)
     return dist, path
 
 
@@ -211,7 +212,7 @@ def floydwarshall(adMat):
 
     for i in range(n):
         for j in range(n):
-            if matrix_info[i][j] == 0 and i != j:
+            if matrix_info[i][j] == 0 and i!=j:
                 matrix_info[i][j] = 9999
 
     # matrix_info = np.array(matrix)
@@ -219,7 +220,7 @@ def floydwarshall(adMat):
     for k in range(n):
         for i in range(n):
             for j in range(n):
-                if matrix_info[i][j] > matrix_info[i][k] + matrix_info[k][j]:
+                if matrix_info[i][j] > matrix_info[i][k] + matrix_info[k][j] and i!=j:
                     matrix_info[i][j] = matrix_info[i][k] + matrix_info[k][j]
                     path[i][j] = k
 
@@ -376,11 +377,13 @@ def runDijkstra(input_Mat):
 
 def runFloyd(input_Mat):
     output_Mat, path = Floyd(input_Mat)
+
     return output_Mat, path
 
 
 def runFloydwarshall(input_Mat):
     output_Mat, path= floydwarshall(input_Mat)
+
     return output_Mat, path
 
 

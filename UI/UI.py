@@ -141,13 +141,13 @@ class Ui_Dialog(object):
         # 如果需要，你可以调整视图大小以适应场景内容
         self.graphicsView_2.fitInView(scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
         #
-        if self.graph_model.output_Path is not None:
-            self.textBrowser.setText("path矩阵：\n" + str(self.graph_model.output_Path))
+        if self.graph_model.output_Msg is not None:
+            self.textBrowser.setText(self.graph_model.output_Msg)
             self.textBrowser.show()
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "27组程序设计"))
         self.pushButton_2.setText(_translate("Dialog", "显示图"))
         self.plainTextEdit.setPlaceholderText(_translate("Dialog", "请以邻接矩阵形式输入图"))
         self.label.setText(_translate("Dialog", "输入"))

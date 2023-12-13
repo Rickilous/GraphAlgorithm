@@ -112,7 +112,7 @@ class Ui_Dialog(object):
         self.graphicsView_2.fitInView(scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
         #
         if self.graph_model.output_Path is not None:
-            self.textBrowser.setText("path矩阵：\n"+str(self.graph_model.output_Path))
+            self.textBrowser.setText("path矩阵：\n" + str(self.graph_model.output_Path))
             self.textBrowser.show()
 
 

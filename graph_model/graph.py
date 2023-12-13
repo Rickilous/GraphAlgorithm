@@ -16,6 +16,8 @@ class Graph_Model:
     global_strGraph = None
     input_Mat = None
     output_Mat = None
+    output_Path = None
+    output_Msg = ""  # 字符串
     colors = None
     G = None
     seed_value = 42
@@ -255,10 +257,23 @@ class Graph_Model:
                 self.output_Mat = GA.runDes_Cir(self.input_Mat)
             elif algorithm_name == "最短路径Dijkstra":
                 self.output_Mat = GA.runDijkstra(self.input_Mat)
+
             elif algorithm_name == "最短路径Floyd":
                 self.output_Mat, self.output_Path = GA.runFloyd(self.input_Mat)
+                self.output_Msg="Path矩阵：\n"+str(self.output_Path)
+                for i in range(self.output_Mat.shape[0]):
+                    if self.output_Mat[i][i] < 0:
+                        self.output_Msg += "\nWarning: This Input Graph Have Negative Circle!\n"
+                        raise Exception("This Input Graph Have Negative Circle!")
+
             elif algorithm_name == "最短路径Floyd-Warshall":
                 self.output_Mat, self.output_Path = GA.runFloydwarshall(self.input_Mat)
+                self.output_Msg = "Path矩阵：\n" + str(self.output_Path)
+                for i in range(self.output_Mat.shape[0]):
+                    if self.output_Mat[i][i] < 0:
+                        self.output_Msg += "\nWarning: This Input Graph Have Negative Circle!\n"
+                        raise Exception("This Input Graph Have Negative Circle!")
+
             elif algorithm_name == "最大匹配匈牙利":
                 self.output_Mat = GA.runHungarian(self.input_Mat)
             elif algorithm_name == "最优匹配Kuhn-Munkres":
