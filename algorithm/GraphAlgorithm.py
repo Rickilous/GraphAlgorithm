@@ -220,7 +220,7 @@ def floydwarshall(adMat):
     for k in range(n):
         for i in range(n):
             for j in range(n):
-                if matrix_info[i][j] > matrix_info[i][k] + matrix_info[k][j] and i!=j:
+                if matrix_info[i][j] > matrix_info[i][k] + matrix_info[k][j]:
                     matrix_info[i][j] = matrix_info[i][k] + matrix_info[k][j]
                     path[i][j] = k
 
@@ -352,7 +352,7 @@ def kruskal(adMat):
     :param adMat: 输入的邻接矩阵 -1元素表示i和j无边
     :return: 最小生成树的邻接矩阵
     '''
-    print(adMat)
+
     n=adMat.shape[0]
     # 排序邻接表
     adList = adMat2adList(adMat)
@@ -381,16 +381,19 @@ def kruskal(adMat):
 def runKruskal(input_Mat):
     print("runKruskal is done,now output")
     output_Mat = kruskal(input_Mat)
+    print(output_Mat)
     return output_Mat
 
 
 def runPrim(input_Mat):
     output_Mat = mst_to_adj_matrix(input_Mat)
+    print(output_Mat)
     return output_Mat
 
 
 def runDes_Cir(input_Mat):
     output_Mat = des_cir(input_Mat, 0)
+    print(output_Mat)
     return output_Mat
 
 
@@ -403,13 +406,13 @@ def runDijkstra(input_Mat):
 
 def runFloyd(input_Mat):
     output_Mat, path = Floyd(input_Mat)
-
+    print(output_Mat)
     return output_Mat, path
 
 
 def runFloydwarshall(input_Mat):
     output_Mat, path= floydwarshall(input_Mat)
-
+    print(output_Mat)
     return output_Mat, path
 
 
@@ -421,4 +424,5 @@ def runHungarian(input_Mat):
 
 def runKuhn_Munkres(input_Mat):
     output_Mat = kuhn_munkres(input_Mat)
+    print(output_Mat)
     return output_Mat

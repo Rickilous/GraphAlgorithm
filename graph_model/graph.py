@@ -128,28 +128,28 @@ class Graph_Model:
                     for i in range(node_num):
                         for j in range(node_num):
                             if des == 'input':
-                                if mat[i][j] != 0 and mat[i][j] != -1 and not G.has_edge(node_names[i], node_names[j]):
+                                if mat[i][j] != 0 and not G.has_edge(node_names[i], node_names[j]):
                                     colors.append('black')
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
                             elif des == 'output':
-                                if mat[i][j] != 0 and mat[i][j] != -1 and not G.has_edge(node_names[i], node_names[j]):
+                                if mat[i][j] != 0 and not G.has_edge(node_names[i], node_names[j]) and i!=j:
                                     colors.append('red')
-                                    print("涂红")
+                                    # print("涂红")
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
-                                elif self.input_Mat[i][j] != 0 and self.input_Mat[i][j] != -1 and not G.has_edge(
-                                        node_names[i], node_names[j]):
+                                elif self.input_Mat[i][j] != 0  and not G.has_edge(
+                                        node_names[i], node_names[j]) and i != j:
                                     colors.append('black')
-                                    print("涂黑")
+                                    # print("涂黑")
                                     G.add_edge(node_names[i], node_names[j], name=self.input_Mat[i][j])
                 if self.global_strGraph[0] == 'digraph':
                     for i in range(node_num):
                         for j in range(node_num):
                             if des == 'input':
-                                if mat[i][j] != 0 and mat[i][j] != -1:
+                                if mat[i][j] != 0 and i!=j :
                                     colors.append('black')
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
                             elif des == 'output':
-                                if mat[i][j] != 0 and mat[i][j] != -1:
+                                if mat[i][j] != 0 and i!=j:
                                     colors.append('red')
                                     G.add_edge(node_names[i], node_names[j], name=mat[i][j])
                                 elif self.input_Mat[i][j] != 0 and self.input_Mat[i][j] != -1:
@@ -176,7 +176,11 @@ class Graph_Model:
                 pos.update((node, (2, index)) for index, node in enumerate(right))
             nx.draw_networkx_labels(G, pos, labels=nx.get_node_attributes(G, 'desc'))
             edge_labels = nx.get_edge_attributes(G, 'name')
-            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.3)
+            # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.3, font_color="blue", font_size=15, rotate=False,
+            #                              bbox=dict(boxstyle="round,pad=0.3",edgecolor="yellow",facecolor="yellow"))
+            nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, label_pos=0.4, font_color="blue",
+                                         font_size=15, rotate=False
+                                         )
             nx.draw(G, pos, edge_color=colors)
         except Exception as e:
             print(f"Error in _draw_graph: {e}")
@@ -249,7 +253,8 @@ class Graph_Model:
             elif algorithm_name == "最小生成树破圈法":
                 self.output_Mat = GA.runDes_Cir(self.input_Mat)
             elif algorithm_name == "最短路径Dijkstra":
-                self.output_Mat = GA.runDijkstra(self.input_Mat)
+                self.output_Mat,self.output_Path = GA.runDijkstra(self.input_Mat)
+                self.output_Msg = "Path矩阵：\n" + str(self.output_Path)
 
             elif algorithm_name == "最短路径Floyd":
                 self.output_Mat, self.output_Path = GA.runFloyd(self.input_Mat)
@@ -264,7 +269,7 @@ class Graph_Model:
                 self.output_Msg = "Path矩阵：\n" + str(self.output_Path)
                 for i in range(self.output_Mat.shape[0]):
                     if self.output_Mat[i][i] < 0:
-                        self.output_Msg += "\nWarning: This Input Graph Have Negative Circle!\n"
+                        self.output_Msg += "\nWarning: This Input Graph Have Negative Circle!\n"  # 备注输出框 加上 显示警告
                         raise Exception("This Input Graph Have Negative Circle!")
 
             elif algorithm_name == "最大匹配匈牙利":
